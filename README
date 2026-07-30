@@ -1,109 +1,188 @@
 # TalentLens AI — Resume Screening & Job-Role Prediction
 
-An advanced full-stack recruitment platform that parses PDF/DOCX resumes, predicts a candidate's best-fit role and creates an explainable job-match score. It supports candidate, recruiter and administrator workflows.
+An advanced AI-powered recruitment platform that analyses PDF/DOCX resumes, predicts suitable job roles and calculates an explainable job-match score.
 
-> AI output is decision support, not an automatic hiring decision. Recruiters must review the resume and supporting evidence before changing an application status.
+## About the Project
 
-## Main features
+TalentLens AI helps candidates understand how well their resumes match a particular job. Recruiters can create jobs, review ranked candidates and manage the recruitment process. Administrators can monitor users, jobs, applications and platform analytics.
 
-### Candidate
+AI results are used only to assist recruiters. The final shortlisting, rejection or hiring decision is always made by a human recruiter.
 
-- Secure registration and JWT login
-- Browse open jobs
-- Upload PDF or DOCX resumes
-- View overall match, skills, semantic and experience scores
-- See matched/missing skills, role prediction and confidence
-- Receive actionable resume recommendations
-- Track application status
+## Main Features
 
-### Recruiter
+### Candidate Features
 
-- Create and manage job vacancies
-- Define required skills and minimum experience
-- Review applicants ranked by match score
-- Shortlist, reject or hire candidates
-- Keep final decisions under human control
+* Secure registration and login
+* Browse available jobs
+* Upload PDF or DOCX resumes
+* AI-based resume analysis
+* Job-description matching
+* Job-role prediction
+* Overall match percentage
+* Skill, semantic and experience scores
+* Matched and missing skills
+* Resume improvement recommendations
+* Application status tracking
 
-### Administrator
+### Recruiter Features
 
-- Platform totals and monthly activity
-- Application pipeline breakdown
-- Predicted-role analytics
-- User role and account management
-- Immutable-style audit event history through the API
+* Recruiter dashboard
+* Create and manage jobs
+* Add required skills and experience
+* View ranked candidates
+* Review AI analysis results
+* Shortlist candidates
+* Reject applications
+* Mark candidates as hired
 
-## Architecture
+### Administrator Features
 
-| Layer | Technology | Responsibility |
-|---|---|---|
-| Web client | React 18, Vite, Axios | Candidate, recruiter and admin UI |
-| Main API | Node.js, Express, Mongoose | Authentication, permissions and business data |
-| AI service | FastAPI, scikit-learn | Parsing, skill extraction, scoring and prediction |
-| Database | MongoDB 7 | Users, jobs, applications and audit events |
-| Deployment | Docker Compose, Nginx | Reproducible local/production-style deployment |
+* Professional admin dashboard
+* Manage candidates and recruiters
+* Change user roles
+* Enable or disable accounts
+* View total users, jobs and applications
+* Application pipeline analytics
+* Predicted job-role analytics
+* Monthly activity reports
+* System audit history
 
-The model uses a hybrid explainable method:
+## Technology Stack
 
-`overall = skills × 55% + semantic similarity × 30% + experience × 15%`
+### Frontend
 
-- Skill score: required skills found in the resume
-- Semantic score: TF-IDF cosine similarity between resume and job description
-- Experience score: stated experience versus the job minimum
-- Role prediction: similarity to transparent role profiles
+* React.js
+* Vite
+* JavaScript
+* CSS
+* Axios
+* Lucide React Icons
 
-This is more suitable for an academic demonstration than pretending a small dataset is a production-trained hiring model. The taxonomy can later be replaced by a validated dataset/model.
+### Backend
 
-## Quick start with Docker
+* Node.js
+* Express.js
+* MongoDB
+* Mongoose
+* JSON Web Token
+* bcrypt
+* Multer
 
-Requirements: Docker Desktop with Docker Compose.
+### AI Service
 
-1. Copy `.env.example` to `.env`.
-2. Replace `JWT_SECRET` and `AI_SERVICE_KEY` with long random values.
-3. Start the system:
+* Python
+* FastAPI
+* scikit-learn
+* TF-IDF
+* Cosine Similarity
+* PyPDF
+* python-docx
+
+### Deployment
+
+* Docker
+* Docker Compose
+* Nginx
+* GitHub Actions
+
+## AI Scoring Method
+
+The overall resume score is calculated using:
+
+```text
+Overall Score =
+Skills Match × 55%
++ Semantic Similarity × 30%
++ Experience Match × 15%
+```
+
+The system provides:
+
+* Skills match score
+* Semantic similarity score
+* Experience score
+* Predicted job role
+* Role confidence
+* Matched skills
+* Missing skills
+* Improvement recommendations
+
+## Project Architecture
+
+```text
+AI-Resume-Screening/
+├── client/          React frontend
+├── server/          Node.js and Express API
+├── ai-service/      Python FastAPI AI service
+├── docs/            API and model documentation
+├── screenshots/     Project screenshots
+├── docker-compose.yml
+├── .env.example
+└── README.md
+```
+
+## Project Screenshots
+
+### Landing Page
+
+![Landing Page](screenshots/landing-page.png)
+
+### Login Page
+
+![Login Page](screenshots/login-page.png)
+
+### Candidate Dashboard
+
+![Candidate Dashboard](screenshots/candidate-dashboard.png)
+
+### Resume Analysis
+
+![Resume Analysis](screenshots/resume-analysis.png)
+
+### Admin Dashboard
+
+![Admin Dashboard](screenshots/admin-dashboard.png)
+
+## Running the Project with Docker
+
+### Requirements
+
+* Docker Desktop
+* Docker Compose
+
+Copy `.env.example` and rename the copied file to `.env`.
+
+Run:
 
 ```bash
 docker compose up --build -d
 ```
 
-4. Seed demo accounts and jobs:
+Add demo users and jobs:
 
 ```bash
 docker compose exec api node src/seed.js
 ```
 
-5. Open `http://localhost:5173`.
+Open the application:
 
-Demo accounts after seeding:
-
-| Role | Email | Password |
-|---|---|---|
-| Administrator | `admin@example.com` | `Admin@12345` |
-| Recruiter | `recruiter@example.com` | `Admin@12345` |
-
-Change all demo passwords before any public deployment.
-
-## Manual development setup
-
-Start MongoDB locally, then create `.env` from `.env.example`. For manual services, use:
-
-```env
-MONGO_URI=mongodb://127.0.0.1:27017/resume_screening
-AI_SERVICE_URL=http://127.0.0.1:8000
-CLIENT_URL=http://localhost:5173
+```text
+http://localhost:5173
 ```
 
-Run the AI service:
+## Running Without Docker
+
+### Start the AI Service
 
 ```bash
 cd ai-service
 python -m venv .venv
-# Windows: .venv\Scripts\activate
-# macOS/Linux: source .venv/bin/activate
+.venv\Scripts\activate
 pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
 ```
 
-Run the Node API:
+### Start the Backend
 
 ```bash
 cd server
@@ -111,7 +190,7 @@ npm install
 npm run dev
 ```
 
-Run the React client:
+### Start the Frontend
 
 ```bash
 cd client
@@ -119,47 +198,81 @@ npm install
 npm run dev
 ```
 
-## Tests and validation
-
-```bash
-cd server && npm test
-cd client && npm run lint && npm run build
-cd ai-service && pytest
-```
-
-## Security and privacy
-
-- Passwords use bcrypt with 12 rounds.
-- JWTs have issuer and expiration validation.
-- Endpoints enforce candidate/recruiter/admin roles.
-- Authentication is rate-limited.
-- Helmet, CORS, input validation and Mongo query sanitization are enabled.
-- Uploaded files receive random server-side names.
-- Only PDF/DOCX MIME types are accepted and size is limited.
-- The AI service requires an internal service key.
-- Password hashes and stored resume filenames are hidden from normal queries.
-- Secrets and uploaded resumes are excluded from Git.
-
-For a real organisation, add malware scanning, encrypted object storage, retention/deletion rules, consent records, accessibility testing, model monitoring and an independent bias assessment.
-
-## Project structure
+Open:
 
 ```text
-ai-resume-screening/
-├── client/       React application
-├── server/       Express API and MongoDB models
-├── ai-service/   FastAPI resume intelligence service
-├── docs/         Architecture, API and evaluation notes
-└── docker-compose.yml
+http://localhost:5173
 ```
 
-## Suggested GitHub description
+## Demo Accounts
 
-> Explainable AI resume screening and job-role prediction platform built with React, Node.js, MongoDB, FastAPI and scikit-learn.
+### Administrator
+
+```text
+Email: admin@example.com
+Password: Admin@12345
+```
+
+### Recruiter
+
+```text
+Email: recruiter@example.com
+Password: Admin@12345
+```
+
+Demo passwords must be changed before public deployment.
+
+## Security Features
+
+* Password hashing using bcrypt
+* JWT authentication
+* Role-based access control
+* API rate limiting
+* Helmet security headers
+* CORS configuration
+* MongoDB query sanitisation
+* File type and size validation
+* Random resume filenames
+* Protected AI service
+* Audit logging
+* Environment-variable protection
+
+## Important Security Notice
+
+Never upload the following to GitHub:
+
+```text
+.env
+node_modules
+.venv
+dist
+uploaded resumes
+database passwords
+JWT secrets
+API keys
+```
+
+## Future Improvements
+
+* OCR support for scanned resumes
+* Email notifications
+* Interview scheduling
+* Candidate feedback system
+* Advanced machine-learning model
+* Larger job-role dataset
+* Cloud resume storage
+* Password reset through email
+* Resume builder
+* Interview-question generator
 
 ## Author
 
-**Mudasir Saleem Ganie**  
-MCA Graduate, University of Kashmir  
-Full-stack development and AI/ML enthusiast
+**Mudasir Saleem Ganie**
 
+MCA Graduate
+University of Kashmir
+MERN Stack Developer and AI/ML Enthusiast
+
+## Disclaimer
+
+The AI scores and job-role predictions are advisory. They should not be used as the only basis for employment decisions. Human review is required for every application.
